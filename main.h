@@ -31,12 +31,13 @@ typedef uint16_t SWtimer_t;
 #define GLOB_EXTERN extern
 #endif
 GLOB_EXTERN volatile uint32_t systime;
-GLOB_EXTERN volatile char rxbuff;                   /* Last character read from the UART. */
+GLOB_EXTERN volatile uint8_t rs232buf,rs485buf,spibuf;                   /* Last character read from the UART. */
 GLOB_EXTERN volatile struct INT_FLAGS {
   uint8_t tmr_int	:	1;
   uint8_t adc_int	:	1;
   uint8_t rx232_int	:	1;
   uint8_t rx485_int	:	1;
+  uint8_t spi_int	:	1;
 }
 intflags;
 GLOB_EXTERN volatile SWtimer_t KbdTimer,SYS_TICms;

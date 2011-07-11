@@ -79,7 +79,6 @@ void putchr(uint8_t c)
 //	UCSR1B |= _BV(RXEN1)|_BV(RXCIE1); // Enable the RX again
 }
 //---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
 
 /*
  * Send a C (NUL-terminated) string down the UART Tx.

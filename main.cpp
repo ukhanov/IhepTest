@@ -92,8 +92,10 @@ int main(void) {
 //-----------------------------------------------------------------------------------------
 
 void io_init(void) {
-	// Init all periphery here
-
+/*
+ *  Init all periphery here
+ *  NOTE!!! Order is important
+ */
 	// Disable all timer interrupts
 	TIMSK = 0;
 	// Use full quartz speed
@@ -104,16 +106,16 @@ void io_init(void) {
 	InitRs232();
 	InitI2c();
 	InitSpi();
+	InitAdc();
+	InitUtility(); // At last init timers etc...
 
-	// At last init timers etc...
-	InitUtility();
-
-	sei();
 	/* enable interrupts */
+	sei();
 
 	/*
 	 * Enable the watchdog with the largest prescaler.  Will cause a
 	 * watchdog reset after approximately 2 s @ Vcc = 5 V
-	 */wdt_enable(WDTO_2S);
+	 */
+	wdt_enable(WDTO_2S);
 }
 //-----------------------------------------------------------------------------------------

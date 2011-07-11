@@ -2,7 +2,7 @@
  * rs485.h
  *
  *  Created on: 28.06.2011
- *      Author: 1
+ *      Author: Mikhail Ukhanov
  */
 
 #ifndef RS485_H_
