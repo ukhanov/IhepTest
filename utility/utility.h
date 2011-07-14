@@ -9,4 +9,5 @@
 #define UTILITY_H_
 
 void InitUtility(void);
+void printbin(uint8_t c);
 #endif /* UTILITY_H_ */

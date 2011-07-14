@@ -16,10 +16,10 @@ ISR(USART0_RX_vect)
 {
 	if (bit_is_clear(UCSR0A, FE)) // No Frame_Error was detected.
 	{
-		rxbuff = UDR0;
+		rs485buf = UDR0;
 		intflags.rx485_int = 1;
 	} else {
-		rxbuff = 0;
+		rs485buf = 0;
 	}
 }
 //---------------------------------------------------------------------------

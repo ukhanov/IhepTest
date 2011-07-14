@@ -46,15 +46,7 @@ int main(void) {
 	PORTC = 0;
 	for (;;) { // Main event loop
 		wdt_reset();
-#if 1
-		// Send meander to all outputs
-		PORTC ^= 0xFF;
-		PORTA ^= 0xF0;
-		//for(uint8_t i=0; i<80; i++) ;
-		_delay_us(50); // wait half a second
-		// putchr('C');
-#else
-
+// Monitor changes of optoisolated input
 		for(uint8_t i=0; i<3; i++) { // read status of the input registers
 			PORTA &=0xF8; // clear chip select
 			PORTA |= 1<<i; // Select the register
@@ -70,22 +62,32 @@ int main(void) {
 			}
 			buf[i] = c;
 		}
-		//#else
 
 		if (intflags.tmr_int) { // System clock interrupt
 			intflags.tmr_int = 0;
+			PORTC ^= 0xFF;
+			PORTA ^= 0xF0;
 		}
 		if (intflags.adc_int) { // Remnants of other project (should never happen)
 			intflags.adc_int = 0;
 		}
 		if (intflags.rx232_int) { // RS232 character received
 			intflags.rx232_int = 0;
+			if(rs232buf > '0' && rs232buf < '9') {
+				ADC_Status(rs232buf-'1');
+			} else {
+				ADC_Data(0);
+			}
 		}
 		if (intflags.rx485_int) { // RS485 character received
 			intflags.rx485_int = 0;
 		}
+		if (intflags.spi_int) { // SPI character received
+			intflags.spi_int = 0;
+			printbin(spibuf);
+			putchr('\n');putchr('\r');
+		}
 		sleep_mode(); // It is supposed to be a major occupation
-#endif
 	}
 	return 0;
 }
@@ -105,7 +107,7 @@ void io_init(void) {
 	InitRs485();
 	InitRs232();
 	InitI2c();
-	InitSpi();
+	InitSpiMaster();
 	InitAdc();
 	InitUtility(); // At last init timers etc...
 

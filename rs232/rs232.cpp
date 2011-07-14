@@ -53,10 +53,10 @@ ISR(USART1_RX_vect)
 {
 	if (bit_is_clear(UCSR1A, FE)) // No Frame_Error was detected.
 	{
-		rxbuff = UDR1;
+		rs232buf = UDR1;
 		intflags.rx232_int = 1;
 	} else {
-		rxbuff = 0;
+		rs232buf = 0;
 	}
 }
 //---------------------------------------------------------------------------
@@ -113,13 +113,5 @@ char c;
     }
 }
 //---------------------------------------------------------------------------
-
-void printbin(uint8_t c)
-{
-	for(uint8_t i=0; i<8; i++) {
-		uint8_t d = ((c>>i)&1) ? '1' : '0';
-		putchr(d);
-	}
-}
 #endif
 

@@ -12,5 +12,4 @@ void InitRs232(void);
 void putchr(uint8_t c);
 void printstr(const char *s);
 void printstr_p(const char *s);
-void printbin(uint8_t c);
 #endif /* RS232_H_ */
