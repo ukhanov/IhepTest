@@ -7,6 +7,7 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdlib.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -44,5 +45,5 @@ GLOB_EXTERN volatile SWtimer_t KbdTimer,SYS_TICms;
 
 // Function prototypes
 void io_init(void);
-
+#define NOP() asm("NOP")
 #endif /* MAIN_H_ */

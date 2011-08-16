@@ -13,6 +13,7 @@
 #include <avr/wdt.h>
 
 #include "../main.h"
+#include "../rs232/rs232.h"
 #include "utility.h"
 //---------------------------------------------------------------------------------------
 
@@ -49,8 +50,19 @@ ISR(TIMER2_COMP_vect)
 void printbin(uint8_t c)
 {
 	for(uint8_t i=0; i<8; i++) {
-		uint8_t d = ((c>>i)&1) ? '1' : '0';
+		uint8_t d = ((0x80>>i)&c) ? '1' : '0';
 		putchr(d);
+	}
+}
+//-----------------------------------------------------------------------------
+
+void printdec(uint32_t val)
+{
+const uint32_t BigVal = 1000000000;
+	for(uint32_t b = BigVal; b > 0; b /=10) {
+		uint8_t c = val/b;
+		putchr(c+'0');
+		val -= c*b;
 	}
 }
 //-----------------------------------------------------------------------------

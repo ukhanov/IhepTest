@@ -31,18 +31,17 @@ void handle_mcucsr(void) {
 	MCUCSR = 0;
 }
 //-----------------------------------------------------------------------------
-PGM_P Oops = "\nOoops, the watchdog bits me!";
-PGM_P Hello = "\nHello, this is ABTOMATNKA controller running on an ATmega 128";
-int main(void) {
-	uint8_t buf[3];
+
+int main(void)
+{
+uint8_t buf[3];
+
 	io_init();
 
 	if ((mcucsr & _BV(WDRF)) == _BV(WDRF)) {
-#ifdef DEBUG
-		printstr_p(Oops);
-#endif
+		printstr_p(PSTR("\nOoops, the watchdog bits me!\n"));
 	}
-	printstr_p(Hello);
+	printstr_p(PSTR("\nHello, this is ABTOMATNKA controller running on an ATmega 128\n"));
 	PORTC = 0;
 	for (;;) { // Main event loop
 		wdt_reset();
@@ -73,10 +72,18 @@ int main(void) {
 		}
 		if (intflags.rx232_int) { // RS232 character received
 			intflags.rx232_int = 0;
+			putchr('\n');	putchr('\r');
+			putchr(rs232buf);
+			putchr('\n');	putchr('\r');
+
 			if(rs232buf > '0' && rs232buf < '9') {
 				ADC_Status(rs232buf-'1');
-			} else {
-				ADC_Data(0);
+				printbin(spibuf);
+				putchr('\n');putchr('\r');
+			} else if (rs232buf >= 'a' && rs232buf <= 'h') {
+				ADC_Data(rs232buf-'a',ADC_VDD);
+			} else if (rs232buf >= 'A' && rs232buf <= 'H') {
+				ADC_Data(rs232buf-'A',0);
 			}
 		}
 		if (intflags.rx485_int) { // RS485 character received
@@ -84,6 +91,8 @@ int main(void) {
 		}
 		if (intflags.spi_int) { // SPI character received
 			intflags.spi_int = 0;
+			printstr_p(PSTR("SPI error!\n "));
+			SS_HIGH();
 			printbin(spibuf);
 			putchr('\n');putchr('\r');
 		}

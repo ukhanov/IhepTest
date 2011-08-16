@@ -10,4 +10,6 @@
 
 void InitUtility(void);
 void printbin(uint8_t c);
+void printdec(uint32_t val);
+
 #endif /* UTILITY_H_ */

@@ -19,11 +19,13 @@
 #define ADC_MODE	(1<<4)
 #define ADC_FILTER	(1<<5)
 #define ADC_DATA	(3<<4)
+#define ADC_SINGLE	(1<<7)
+#define ADC_UNIPOLAR	(1<<2)
 #define ADC_OE_ADC	_BV(PE2)
 #define ADC_CS_ADC	_BV(PB4)
 
 void InitAdc(void);
 void ADC_Status(uint8_t c);
-void ADC_Data(uint8_t c);
+void ADC_Data(uint8_t c, uint8_t Ch);
 
 #endif /* ADC_H_ */

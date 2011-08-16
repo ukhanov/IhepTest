@@ -101,7 +101,7 @@ return;
  * Same as above, but the string is located in program memory,
  * so "lpm" instructions are needed to fetch it.
  */
-void printstr_p(const char *s)
+void printstr_p(PGM_P s)
 {
 char c;
 
