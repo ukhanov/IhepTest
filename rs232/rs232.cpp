@@ -43,20 +43,19 @@ void InitRs232(void)
 	UBRR1L = 25; UBRR1H = 0;//SetUart1Baud(); 25->19200
 }
 //---------------------------------------------------------------------------
-#if 1
-
 /*
  * UART receive interrupt.  Fetch the character received and buffer
  * it, unless there was a framing error.
  */
 ISR(USART1_RX_vect)
 {
-	if (bit_is_clear(UCSR1A, FE)) // No Frame_Error was detected.
+//	intflags.rx232_int = 1;
+	if (bit_is_clear(UCSR1A, FE1)) // No Frame_Error was detected.
 	{
 		rs232buf = UDR1;
 		intflags.rx232_int = 1;
 	} else {
-		rs232buf = 0;
+		rs232buf = '?';
 	}
 }
 //---------------------------------------------------------------------------
@@ -79,6 +78,15 @@ void putchr(uint8_t c)
 //	UCSR1B |= _BV(RXEN1)|_BV(RXCIE1); // Enable the RX again
 }
 //---------------------------------------------------------------------------
+uint8_t getchr()
+{
+uint16_t Wait4char;
+	for(;;) {
+		if(intflags.rx232_int) break;
+	}
+	return rs232buf;
+}
+//---------------------------------------------------------------------------
 
 /*
  * Send a C (NUL-terminated) string down the UART Tx.
@@ -86,8 +94,6 @@ void putchr(uint8_t c)
 
 void printstr(const char *s)
 {
-return;
-
   while (*s)
     {
       if (*s == '\n')
@@ -113,5 +119,5 @@ char c;
     }
 }
 //---------------------------------------------------------------------------
-#endif
+
 

@@ -14,6 +14,7 @@
  */
 ISR(USART0_RX_vect)
 {
+	cli();
 	if (bit_is_clear(UCSR0A, FE)) // No Frame_Error was detected.
 	{
 		rs485buf = UDR0;
@@ -21,11 +22,15 @@ ISR(USART0_RX_vect)
 	} else {
 		rs485buf = 0;
 	}
+	sei();
 }
 //---------------------------------------------------------------------------
 
 void InitRs485(void)
 {
+	DDR_485_WE |= _BV(PIN_485_WE); // Enable output of the WRITE_ENABLE pin of the ADM485
+	NOP();NOP();NOP();_delay_ms(1);
+	RS485TX_OFF();
 /*
  * Set baud rate of USART1 port
  * Set 8-N-1
@@ -34,6 +39,7 @@ void InitRs485(void)
 	UCSR0B = _BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0); // Enable RX,TX and RX complete interrupts.
 	UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);// | _BV(USBS1); // Asynchronous, No parity, 8 bit mode
 	UBRR0L = 25; UBRR0H = 0;//SetUart1Baud(); 25->19200
+
 }
 //-----------------------------------------------------------------------------
 /*
@@ -43,12 +49,12 @@ void InitRs485(void)
  */
 void putchr485(uint8_t c)
 {
-	UCSR0B &= ~(_BV(RXEN)|_BV(RXCIE));
-	loop_until_bit_is_set(UCSR0A, UDRE);
+//	UCSR0B &= ~(_BV(RXEN0)|_BV(RXCIE0));
+	loop_until_bit_is_set(UCSR0A, UDRE0);
 	UDR0 = c;
-	loop_until_bit_is_set(UCSR0A, UDRE);
+	loop_until_bit_is_set(UCSR0A, TXC0);
 	intflags.rx485_int = 0;
-	UCSR0B |= _BV(RXEN)|_BV(RXCIE);
+//	UCSR0B |= _BV(RXEN0)|_BV(RXCIE0);
 }
 //---------------------------------------------------------------------------
 
@@ -58,8 +64,6 @@ void putchr485(uint8_t c)
 
 void printstr485(const char *s)
 {
-return;
-
   while (*s)
     {
       if (*s == '\n')

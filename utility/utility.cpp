@@ -66,3 +66,21 @@ const uint32_t BigVal = 1000000000;
 	}
 }
 //-----------------------------------------------------------------------------
+
+void printV(uint32_t val)
+{
+const uint32_t OneVolt = 2726000;  // ADC is capable to measure 5V max
+uint8_t first;
+	first = 1;
+	for(uint32_t b = OneVolt*10; b > 0; b /=10) {
+		uint8_t c = val/b;
+		if(c != 0 && first) first = 0;
+		if(!first) putchr(c+'0');
+		val -= c*b;
+		if(b == OneVolt) {
+			putchr('.');
+			first = 0;
+		}
+	}
+}
+//-----------------------------------------------------------------------------

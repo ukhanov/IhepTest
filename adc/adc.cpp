@@ -104,6 +104,8 @@ int32_t adcval;
 
 	printstr_p(PSTR("\nAmplitude: "));
 //	ltoa(adcval,cbuf,10);
+	printV(adcval);
+	putchr(' ');
 	printdec(adcval);
 	for(tmp=0; tmp<3; tmp++) {
 		putchr(' ');
